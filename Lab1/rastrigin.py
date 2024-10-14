@@ -3,12 +3,12 @@ import math
 
 
 # Funkcja Rastrigina
-def funkcja_rastrigina(x):
+def rastrigin(x):
     return 10 * len(x) + sum([xi**2 - 10 * math.cos(20 * math.pi * xi) for xi in x])
 
 
 # Funkcja obliczająca minimalną liczbę bitów dla danego przedziału i dokładności
-def oblicz_minimalna_liczba_bitow(a, b, d):
+def oblicz_bity(a, b, d):
     liczba_wartosci = (b - a) * (10**d) + 1
     m = 1
     while not (2 ** (m - 1) <= liczba_wartosci <= 2**m):
@@ -56,9 +56,9 @@ def wyswietl_populacje(populacja, granice, liczba_bitow):
     for i, osobnik in enumerate(populacja):
         wartosci_rzeczywiste = dekoduj_osobnika(osobnik, granice, liczba_bitow)
         print(
-            f"Osobnik {i + 1}: {osobnik} -> Wartości rzeczywiste: {wartosci_rzeczywiste}"
+            f"Osobnik {i + 1}:\n    Binarnie: {osobnik}\n    Wartości rzeczywiste: {wartosci_rzeczywiste}"
         )
-        print(f"Wartość funkcji Rastrigina: {funkcja_rastrigina(wartosci_rzeczywiste)}")
+        print(f"    Wartość funkcji Rastrigina: {rastrigin(wartosci_rzeczywiste)}")
 
 
 # Parametry algorytmu
@@ -71,9 +71,7 @@ dokladnosci = [
 granice = [(-1, 1), (-3.5, 3.5), (-5.12, 5.12)]  # Zakresy dla każdej zmiennej
 
 # Obliczanie minimalnej liczby bitów dla każdej zmiennej
-liczba_bitow = [
-    oblicz_minimalna_liczba_bitow(a, b, d) for (a, b), d in zip(granice, dokladnosci)
-]
+liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
 
 # Generowanie populacji
 populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
