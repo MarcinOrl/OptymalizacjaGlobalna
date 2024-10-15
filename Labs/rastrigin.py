@@ -1,3 +1,4 @@
+from config import rozmiar_populacji, dokladnosci, granice
 import random
 import math
 
@@ -61,20 +62,12 @@ def wyswietl_populacje(populacja, granice, liczba_bitow):
         print(f"    Wartość funkcji Rastrigina: {rastrigin(wartosci_rzeczywiste)}")
 
 
-# Parametry algorytmu
-rozmiar_populacji = 3  # Liczba osobników w populacji
-dokladnosci = [
-    1,
-    0,
-    1,
-]  # Dokładności dla każdej zmiennej
-granice = [(-1, 1), (-3.5, 3.5), (-5.12, 5.12)]  # Zakresy dla każdej zmiennej
+if __name__ == "__main__":
+    # Obliczanie minimalnej liczby bitów dla każdej zmiennej
+    liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
 
-# Obliczanie minimalnej liczby bitów dla każdej zmiennej
-liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
+    # Generowanie populacji
+    populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
 
-# Generowanie populacji
-populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
-
-# Wyświetlenie populacji
-wyswietl_populacje(populacja, granice, liczba_bitow)
+    # Wyświetlenie populacji
+    wyswietl_populacje(populacja, granice, liczba_bitow)
