@@ -18,7 +18,7 @@ def mutacja(populacja, prawdopodobienstwo):
 
 
 # Funkcja inwersji odwracająca kolejność bitów w wylosowanym przedziale
-def inwersja(osobnik, prawdopodobienstwo):
+def inwersja(populacja, prawdopodobienstwo):
     for osobnik in populacja:
         if random.random() < prawdopodobienstwo:
             print(f"Przed inwersją: {osobnik}")
