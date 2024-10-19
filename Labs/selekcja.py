@@ -1,5 +1,6 @@
-from rastrigin import generuj_populacje, dekoduj_osobnika, rastrigin, oblicz_bity
+from rastrigin import generuj_populacje, oblicz_bity
 from config import rozmiar_populacji, dokladnosci, granice
+from osobnik import Osobnik
 import random
 
 
@@ -70,27 +71,13 @@ def selekcja_ruletki(populacja, minimum=True):
     return nowa_populacja
 
 
-liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
-
-populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
-
-
-# Klasa Osobnik, do trzymania wartości i przystosowania
-class Osobnik:
-    def __init__(self, genotyp):
-        self.genotyp = genotyp
-        self.wartosci = dekoduj_osobnika(genotyp, granice, liczba_bitow)
-        self.wartosc_funkcji = rastrigin(self.wartosci)
-
-    def __repr__(self):
-        return (
-            f"Osobnik(wartosci={self.wartosci}, wartosc_funkcji={self.wartosc_funkcji})"
-        )
-
-
 if __name__ == "__main__":
     # Tworzenie populacji osobników
-    populacja_osobnikow = [Osobnik(genotyp) for genotyp in populacja]
+    liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
+    populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
+
+    # Tworzenie instancji Osobnik
+    populacja_osobnikow = [Osobnik(genotyp, liczba_bitow) for genotyp in populacja]
 
     print("Wartości funkcji wszystkich osobników:")
     for i, osobnik in enumerate(populacja_osobnikow, 1):
