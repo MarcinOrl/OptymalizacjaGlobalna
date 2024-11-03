@@ -1,12 +1,11 @@
-from rastrigin import generuj_populacje, oblicz_bity
+from main import Populacja
 from config import rozmiar_populacji, dokladnosci, granice
-from osobnik import Osobnik
 import random
 
 
 def selekcja_turniejowa(populacja, minimum=True):
-
     nowa_populacja = []
+
     for _ in range(len(populacja)):
         # Losowanie dwóch osobników bez zwracania
         osobnik1, osobnik2 = random.sample(populacja, 2)
@@ -25,17 +24,17 @@ def selekcja_turniejowa(populacja, minimum=True):
 
 
 def selekcja_rankingu(populacja, minimum=True):
-
     nowa_populacja = []
+
     populacja = sorted(populacja, key=lambda x: x.wartosc_funkcji, reverse=not minimum)
     for _ in range(len(populacja)):
         losowa_liczba = random.randint(0, random.randint(0, len(populacja) - 1))
         nowa_populacja.append(populacja[losowa_liczba])
+
     return nowa_populacja
 
 
 def selekcja_ruletki(populacja, minimum=True):
-
     if minimum:
         # Odwrócenie wartości funkcji przystosowania dla minimalizacji
         max_wartosc = max(osobnik.wartosc_funkcji for osobnik in populacja)
@@ -73,29 +72,26 @@ def selekcja_ruletki(populacja, minimum=True):
 
 if __name__ == "__main__":
     # Tworzenie populacji osobników
-    liczba_bitow = [oblicz_bity(a, b, d) for (a, b), d in zip(granice, dokladnosci)]
-    populacja = generuj_populacje(rozmiar_populacji, liczba_bitow)
+    populacja = Populacja(rozmiar_populacji, granice, dokladnosci)
 
-    # Tworzenie instancji Osobnik
-    populacja_osobnikow = [Osobnik(genotyp, liczba_bitow) for genotyp in populacja]
-
+    # Wykonywanie selekcji
     print("Wartości funkcji wszystkich osobników:")
-    for i, osobnik in enumerate(populacja_osobnikow, 1):
+    for i, osobnik in enumerate(populacja.osobniki, 1):
         print(f"Osobnik {i}: {osobnik.wartosc_funkcji}")
 
-    nowa_populacja_turniejowa = selekcja_turniejowa(populacja_osobnikow, minimum=True)
+    nowa_populacja_turniejowa = selekcja_turniejowa(populacja.osobniki, minimum=True)
     print(
         "Nowa populacja (turniej):",
         [osobnik.wartosc_funkcji for osobnik in nowa_populacja_turniejowa],
     )
 
-    nowa_populacja_rankingu = selekcja_rankingu(populacja_osobnikow, minimum=True)
+    nowa_populacja_rankingu = selekcja_rankingu(populacja.osobniki, minimum=True)
     print(
         "Nowa populacja (ranking):",
         [osobnik.wartosc_funkcji for osobnik in nowa_populacja_rankingu],
     )
 
-    nowa_populacja_ruletka = selekcja_ruletki(populacja_osobnikow, minimum=True)
+    nowa_populacja_ruletka = selekcja_ruletki(populacja.osobniki, minimum=True)
     print(
         "Nowa populacja (ruletka):",
         [osobnik.wartosc_funkcji for osobnik in nowa_populacja_ruletka],
