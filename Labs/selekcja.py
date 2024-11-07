@@ -1,6 +1,6 @@
 from main import Populacja
 from config import rozmiar_populacji, dokladnosci, granice
-import random
+import random, copy
 
 
 def selekcja_turniejowa(populacja, minimum=True):
@@ -18,7 +18,7 @@ def selekcja_turniejowa(populacja, minimum=True):
             else osobnik2
         )
 
-        nowa_populacja.append(najlepszy)
+        nowa_populacja.append(copy.deepcopy(najlepszy))
 
     return nowa_populacja
 
@@ -29,7 +29,7 @@ def selekcja_rankingu(populacja, minimum=True):
     populacja = sorted(populacja, key=lambda x: x.wartosc_funkcji, reverse=not minimum)
     for _ in range(len(populacja)):
         losowa_liczba = random.randint(0, random.randint(0, len(populacja) - 1))
-        nowa_populacja.append(populacja[losowa_liczba])
+        nowa_populacja.append(copy.deepcopy(populacja[losowa_liczba]))
 
     return nowa_populacja
 
@@ -64,7 +64,7 @@ def selekcja_ruletki(populacja, minimum=True):
         losowa_liczba = random.random()
         for i, dystrybuanta_i in enumerate(dystrybuanta):
             if losowa_liczba <= dystrybuanta_i:
-                nowa_populacja.append(populacja[i])
+                nowa_populacja.append(copy.deepcopy(populacja[i]))
                 break
 
     return nowa_populacja
