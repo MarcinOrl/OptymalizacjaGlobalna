@@ -20,7 +20,7 @@ def sukcesja_trywialna(populacja, liczba_epok, typ_selekcji, minimum):
         *[f"{osobnik.wartosc_funkcji}" for osobnik in populacja.osobniki],
     )
     for epoka in range(liczba_epok):
-        # print(f"Epoka {epoka + 1}:")
+        print(f"Epoka {epoka + 1}:")
 
         # Selekcja na podstawie wybranego typu
         match typ_selekcji:
@@ -44,9 +44,9 @@ def sukcesja_trywialna(populacja, liczba_epok, typ_selekcji, minimum):
         for osobnik in populacja.osobniki:
             populacja.dekoduj_osobnika(osobnik)
 
-        # print(
-        #     "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
-        # )
+        print(
+            "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
+        )
 
     return populacja
 
@@ -58,7 +58,7 @@ def sukcesja_elitarna(populacja, liczba_epok, typ_selekcji, minimum):
         *[f"{osobnik.wartosc_funkcji}" for osobnik in populacja.osobniki],
     )
     for epoka in range(liczba_epok):
-        # print(f"Epoka {epoka + 1}:")
+        print(f"Epoka {epoka + 1}:")
 
         # Zapamiętaj osobniki startowe przed selekcją
         osobniki_startowe = copy.deepcopy(populacja.osobniki)
@@ -122,9 +122,9 @@ def sukcesja_elitarna(populacja, liczba_epok, typ_selekcji, minimum):
         wszystkie_osobniki.sort(key=lambda x: x.wartosc_funkcji, reverse=not minimum)
         populacja.osobniki = wszystkie_osobniki[: len(populacja.osobniki)]
 
-        # print(
-        #     "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
-        # )
+        print(
+            "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
+        )
 
     return populacja
 
@@ -136,7 +136,7 @@ def sukcesja_losowa(populacja, liczba_epok, typ_selekcji, minimum):
         *[f"{osobnik.wartosc_funkcji}" for osobnik in populacja.osobniki],
     )
     for epoka in range(liczba_epok):
-        # print(f"Epoka {epoka + 1}:")
+        print(f"Epoka {epoka + 1}:")
 
         # Zapamiętaj osobniki startowe przed selekcją
         osobniki_startowe = copy.deepcopy(populacja.osobniki)
@@ -209,9 +209,9 @@ def sukcesja_losowa(populacja, liczba_epok, typ_selekcji, minimum):
             if i not in indeksy_do_usuniecia
         ][: len(populacja.osobniki)]
 
-        # print(
-        #     "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
-        # )
+        print(
+            "Nowa populacja:", *[f"{os.wartosc_funkcji}" for os in populacja.osobniki]
+        )
 
     return populacja
 
@@ -231,37 +231,10 @@ def sukcesja(populacja, liczba_epok, typ_sukcesji, typ_selekcji, minimum=True):
 
 if __name__ == "__main__":
 
-    liczba_epok = 100
-    liczba_sukcesji = 10
     typ_sukcesji = "elitarna"
-    typ_selekcji = "turniejowa"
+    typ_selekcji = "ruletkowa"
     minimum = True
+    liczba_epok = 10
 
-    suma_srednich = 0
-    suma_srednich_bazowych = 0
-
-    for i in range(liczba_sukcesji):
-        print(f"Sukcesja {i + 1}:")
-
-        populacja = Populacja(rozmiar_populacji, granice, dokladnosci)
-        srednia_bazowa = sum(
-            osobnik.wartosc_funkcji for osobnik in populacja.osobniki
-        ) / len(populacja.osobniki)
-        print(f"Średnia bazowa: {srednia_bazowa}")
-        populacja = sukcesja(
-            populacja, liczba_epok, typ_sukcesji, typ_selekcji, minimum
-        )
-
-        srednia_przystosowania = sum(
-            osobnik.wartosc_funkcji for osobnik in populacja.osobniki
-        ) / len(populacja.osobniki)
-        print(f"Średnia przystosowania: {srednia_przystosowania}")
-
-        suma_srednich_bazowych += srednia_bazowa
-
-        suma_srednich += srednia_przystosowania
-
-    srednia_bazowa_ogolna = suma_srednich_bazowych / liczba_sukcesji
-    print(f"Średnia bazowa z sukcesji: {srednia_bazowa_ogolna}")
-    srednia_ogolna = suma_srednich / liczba_sukcesji
-    print(f"Średnia z sukcesji: {srednia_ogolna}")
+    populacja = Populacja(rozmiar_populacji, granice, dokladnosci)
+    populacja = sukcesja(populacja, liczba_epok, typ_sukcesji, typ_selekcji, minimum)
