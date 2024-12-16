@@ -21,83 +21,111 @@ def krzyzowanie_tsp(populacja, prawdopodobienstwo, typ, instancja_populacji):
         match typ:
             case "OX":
                 # Krzyżowanie jednokrotne (Order Crossover)
-                punkt1, punkt2 = sorted(random.sample(range(len(rodzic1.genotyp)), 2))
-                print(f"Punkty: {punkt1}, {punkt2}")
-                fragment1 = rodzic1.genotyp[punkt1:punkt2]
-                fragment2 = rodzic2.genotyp[punkt1:punkt2]
+                rozmiar = len(rodzic1.genotyp)
 
-                potomny1 = fragment1 + [
-                    gen for gen in rodzic2.genotyp if gen not in fragment1
-                ]
-                potomny2 = fragment2 + [
-                    gen for gen in rodzic1.genotyp if gen not in fragment2
-                ]
+                potomstwo1 = [None] * rozmiar
+                potomstwo2 = [None] * rozmiar
 
-                rodzic1.genotyp = potomny1
-                rodzic2.genotyp = potomny2
+                punkt1, punkt2 = sorted(random.sample(range(rozmiar), 2))
+
+                potomstwo1[punkt1 : punkt2 + 1] = rodzic1.genotyp[punkt1 : punkt2 + 1]
+                potomstwo2[punkt1 : punkt2 + 1] = rodzic2.genotyp[punkt1 : punkt2 + 1]
+
+                idx = (punkt2 + 1) % rozmiar
+                for miasto in rodzic2.genotyp:
+                    if miasto not in potomstwo1:
+                        potomstwo1[idx] = miasto
+                        idx = (idx + 1) % rozmiar
+
+                idx = (punkt2 + 1) % rozmiar
+                for miasto in rodzic1.genotyp:
+                    if miasto not in potomstwo2:
+                        potomstwo2[idx] = miasto
+                        idx = (idx + 1) % rozmiar
+
+                rodzic1.genotyp = potomstwo1
+                rodzic2.genotyp = potomstwo2
 
             case "PMX":
                 # Krzyżowanie częściowo mieszane (Partially Mapped Crossover)
-                punkt1, punkt2 = sorted(random.sample(range(len(rodzic1.genotyp)), 2))
-                potomny1 = rodzic1.genotyp[:]
-                potomny2 = rodzic2.genotyp[:]
+                rozmiar = len(rodzic1.genotyp)
 
-                mapa1 = dict(
-                    zip(rodzic1.genotyp[punkt1:punkt2], rodzic2.genotyp[punkt1:punkt2])
-                )
-                mapa2 = dict(
-                    zip(rodzic2.genotyp[punkt1:punkt2], rodzic1.genotyp[punkt1:punkt2])
-                )
+                potomstwo1 = [None] * rozmiar
+                potomstwo2 = [None] * rozmiar
 
-                for i in range(len(rodzic1.genotyp)):
-                    if i < punkt1 or i >= punkt2:
-                        while potomny1[i] in mapa1:
-                            potomny1[i] = mapa1[potomny1[i]]
-                        while potomny2[i] in mapa2:
-                            potomny2[i] = mapa2[potomny2[i]]
+                punkt1, punkt2 = sorted(random.sample(range(rozmiar), 2))
 
-                potomny1[punkt1:punkt2] = rodzic2.genotyp[punkt1:punkt2]
-                potomny2[punkt1:punkt2] = rodzic1.genotyp[punkt1:punkt2]
+                for i in range(punkt1, punkt2 + 1):
+                    if rodzic2.genotyp[i] in potomstwo1[punkt1 : punkt2 + 1]:
+                        continue
+                    value = rodzic2.genotyp[i]
+                    while value in potomstwo1:
+                        index = rodzic1.genotyp.index(value)
+                        value = rodzic2.genotyp[index]
+                    potomstwo1[rodzic2.genotyp.index(value)] = rodzic2.genotyp[i]
 
-                rodzic1.genotyp = potomny1
-                rodzic2.genotyp = potomny2
+                for i in range(punkt1, punkt2 + 1):
+                    if rodzic1.genotyp[i] in potomstwo2[punkt1 : punkt2 + 1]:
+                        continue
+                    value = rodzic1.genotyp[i]
+                    while value in potomstwo2:
+                        index = rodzic2.genotyp.index(value)
+                        value = rodzic1.genotyp[index]
+                    potomstwo2[rodzic1.genotyp.index(value)] = rodzic1.genotyp[i]
+
+                for i in range(rozmiar):
+                    if potomstwo1[i] is None:
+                        potomstwo1[i] = rodzic2.genotyp[i]
+                    if potomstwo2[i] is None:
+                        potomstwo2[i] = rodzic1.genotyp[i]
+
+                rodzic1.genotyp = potomstwo1
+                rodzic2.genotyp = potomstwo2
 
             case "CX":
                 # Krzyżowanie cykliczne (Cycle Crossover)
-                potomny1, potomny2 = [None] * len(rodzic1.genotyp), [None] * len(
-                    rodzic2.genotyp
-                )
-                cykl = 0
-                indeks = 0
-                while None in potomny1:
-                    if potomny1[indeks] is None:
-                        cykl += 1
-                        start = indeks
-                        while True:
-                            potomny1[indeks] = (
-                                rodzic1.genotyp[indeks]
-                                if cykl % 2 == 1
-                                else rodzic2.genotyp[indeks]
-                            )
-                            potomny2[indeks] = (
-                                rodzic2.genotyp[indeks]
-                                if cykl % 2 == 1
-                                else rodzic1.genotyp[indeks]
-                            )
-                            indeks = rodzic1.genotyp.index(rodzic2.genotyp[indeks])
-                            if indeks == start:
-                                break
-                    indeks = potomny1.index(None) if None in potomny1 else indeks
+                rozmiar = len(rodzic1.genotyp)
 
-                rodzic1.genotyp = potomny1
-                rodzic2.genotyp = potomny2
+                potomstwo1 = [None] * rozmiar
+                potomstwo2 = [None] * rozmiar
+
+                cykl = []
+                indeks = 0
+
+                while indeks not in cykl:
+                    cykl.append(indeks)
+                    miasto = rodzic1.genotyp[indeks]
+                    indeks = rodzic2.genotyp.index(miasto)
+
+                for i in cykl:
+                    potomstwo1[i] = rodzic1.genotyp[i]
+
+                for i in cykl:
+                    potomstwo2[i] = rodzic2.genotyp[i]
+
+                idx = 0
+                for miasto in rodzic2.genotyp:
+                    if miasto not in cykl:
+                        while potomstwo1[idx] is not None:
+                            idx = (idx + 1) % rozmiar
+                        potomstwo1[idx] = miasto
+
+                idx = 0
+                for miasto in rodzic1.genotyp:
+                    if miasto not in cykl:
+                        while potomstwo2[idx] is not None:
+                            idx = (idx + 1) % rozmiar
+                        potomstwo2[idx] = miasto
+
+                rodzic1.genotyp = potomstwo1
+                rodzic2.genotyp = potomstwo2
 
             case _:
                 raise ValueError(f"Nieznany typ krzyzowania: {typ}")
 
     # Aktualizacja długości tras po krzyżowaniu
     for osobnik in populacja:
-        osobnik.dlugosc_trasy = None  # Resetuj długość trasy
+        osobnik.dlugosc_trasy = None
         instancja_populacji.oblicz_dlugosc_trasy(osobnik)
 
     return populacja
@@ -113,7 +141,7 @@ if __name__ == "__main__":
             f"Osobnik {i + 1}: {osobnik.genotyp}, Długosc trasy: {osobnik.dlugosc_trasy}"
         )
 
-    typ_krzyzowania = "OX"  # Do wyboru: "OX", "PMX" lub "CX"
+    typ_krzyzowania = "CX"  # Do wyboru: "OX", "PMX" lub "CX"
     prawdopodobienstwo = 0.8
     populacja.osobniki = krzyzowanie_tsp(
         populacja.osobniki, prawdopodobienstwo, typ_krzyzowania, populacja
