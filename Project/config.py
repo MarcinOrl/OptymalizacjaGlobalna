@@ -1,5 +1,5 @@
 # config.py
-rozmiar_populacji = 10
+rozmiar_puli_tras = 10
 liczba_miast = 5
 macierz_odleglosci = [
     [0, 2, 9, 10, 7],
