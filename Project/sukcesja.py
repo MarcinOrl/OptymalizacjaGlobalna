@@ -8,12 +8,11 @@ import random, copy
 
 # Sukcesja z całkowitym zastąpieniwm - trywialna
 def sukcesja_trywialna(pula_tras, liczba_epok, typ_selekcji):
-    print(
-        "Bazowa pula tras:",
-        *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
-    )
-    for epoka in range(liczba_epok):
-        print(f"Epoka {epoka + 1}:")
+    # print(
+    #     "Bazowa pula tras:",
+    #     *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
+    # )
+    for _ in range(liczba_epok):
 
         # Selekcja na podstawie wybranego typu
         match typ_selekcji:
@@ -34,19 +33,18 @@ def sukcesja_trywialna(pula_tras, liczba_epok, typ_selekcji):
         for trasa in pula_tras.trasy:
             pula_tras.oblicz_dlugosc_trasy(trasa)
 
-        print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
+        # print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
 
     return pula_tras
 
 
 # Sukcesja z częściowym zastępowaniem – elitarna
 def sukcesja_elitarna(pula_tras, liczba_epok, typ_selekcji):
-    print(
-        "Bazowa pula tras:",
-        *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
-    )
-    for epoka in range(liczba_epok):
-        print(f"Epoka {epoka + 1}:")
+    # print(
+    #     "Bazowa pula tras:",
+    #     *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
+    # )
+    for _ in range(liczba_epok):
 
         # Zapamiętaj trasy startowe przed selekcją
         trasy_startowe = copy.deepcopy(pula_tras.trasy)
@@ -90,19 +88,18 @@ def sukcesja_elitarna(pula_tras, liczba_epok, typ_selekcji):
         wszystkie_trasy.sort(key=lambda x: x.dlugosc_trasy, reverse=False)
         pula_tras.trasy = wszystkie_trasy[: len(pula_tras.trasy)]
 
-        print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
+        # print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
 
     return pula_tras
 
 
 # Sukcesja z częściowym zastępowaniem – losowa
 def sukcesja_losowa(pula_tras, liczba_epok, typ_selekcji):
-    print(
-        "Bazowa pula tras:",
-        *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
-    )
-    for epoka in range(liczba_epok):
-        print(f"Epoka {epoka + 1}:")
+    # print(
+    #     "Bazowa pula tras:",
+    #     *[f"{trasa.dlugosc_trasy}" for trasa in pula_tras.trasy],
+    # )
+    for _ in range(liczba_epok):
 
         # Zapamiętaj trasy startowe przed selekcją
         trasy_startowe = copy.deepcopy(pula_tras.trasy)
@@ -155,7 +152,7 @@ def sukcesja_losowa(pula_tras, liczba_epok, typ_selekcji):
             if i not in indeksy_do_usuniecia
         ][: len(pula_tras.trasy)]
 
-        print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
+        # print("Nowa pula tras:", *[f"{os.dlugosc_trasy}" for os in pula_tras.trasy])
 
     return pula_tras
 
@@ -180,4 +177,4 @@ if __name__ == "__main__":
     liczba_epok = 10
 
     pula_tras = Pula_tras(rozmiar_puli_tras, liczba_miast, macierz_odleglosci)
-    pula_tras = sukcesja(pula_tras, liczba_epok, typ_sukcesji, typ_selekcji)
+    sukcesja(pula_tras, liczba_epok, typ_sukcesji, typ_selekcji)

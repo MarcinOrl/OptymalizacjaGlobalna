@@ -19,7 +19,7 @@ class Pula_tras:
 
     # Generuje losową permutację miast
     def generuj_permutacje(self):
-        return random.sample(range(self.liczba_miast), self.liczba_miast)
+        return random.sample(range(1, self.liczba_miast + 1), self.liczba_miast)
 
     # Oblicza długość trasy dla danej trasy
     def oblicz_dlugosc_trasy(self, trasa):
@@ -28,7 +28,7 @@ class Pula_tras:
         for i in range(len(permutacja_miast)):
             miasto_a = permutacja_miast[i]
             miasto_b = permutacja_miast[(i + 1) % len(permutacja_miast)]
-            dlugosc += self.macierz_odleglosci[miasto_a][miasto_b]
+            dlugosc += self.macierz_odleglosci[miasto_a - 1][miasto_b - 1]
         trasa.dlugosc_trasy = dlugosc
 
     # Wyswietla permutacje i wartości dla wszystkich tras
